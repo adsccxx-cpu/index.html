@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>糖友碳水全能計算機</title>
+<title>糖友碳水全能計算機 Pro</title>
 
 <style>
   :root {
@@ -12,7 +12,7 @@
     --card: #FFFFFF;
     --text: #2D3436;
     --accent: #FF7675;
-    --hint: #4b5563; /* 提高對比度 */
+    --hint: #4b5563;
   }
 
   body {
@@ -62,23 +62,21 @@
     width: 100%; padding: 14px; font-size: 17px; border: 2px solid #E2E8F0; border-radius: 12px; margin-bottom: 10px; box-sizing: border-box;
   }
 
-  /* 加高搜尋清單 */
+  /* 搜尋清單直向加長 */
   .food-list {
-    height: 280px; overflow-y: auto; border: 2px solid #F0F4F8; border-radius: 12px; background: #FAFBFC; margin-bottom: 15px;
+    height: 300px; overflow-y: auto; border: 2px solid #F0F4F8; border-radius: 12px; background: #FAFBFC; margin-bottom: 15px;
   }
   .food-item {
     padding: 16px; border-bottom: 1px solid #EDF2F7; display: flex; justify-content: space-between; font-size: 17px; cursor: pointer;
   }
   .food-item:active { background: #EBF8FF; }
 
-  /* 核心計算區 */
+  /* 聰明計算區 */
   .manual-input-box {
     background: #F8F9FE; padding: 18px; border-radius: 18px; border: 2px solid #EBF4FF;
   }
   .guide-text { font-size: 15px; color: var(--primary); margin-bottom: 12px; font-weight: bold; display: block; }
-  
   .input-label { font-size: 14px; color: var(--hint); margin-top: 10px; margin-bottom: 6px; font-weight: 500; }
-  
   .calc-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   
   input[type="number"], input[type="text"] {
@@ -86,7 +84,7 @@
   }
   input:focus { border-color: var(--primary); background: #FFF; }
   
-  .unit-text { font-weight: bold; font-size: 16px; color: #4A5568; white-space: nowrap; }
+  .unit-text { font-weight: bold; font-size: 16px; color: #4A5568; white-space: nowrap; width: 45px; }
 
   .add-btn {
     width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 15px; font-weight: bold; font-size: 18px; 
@@ -124,41 +122,37 @@
   <h1>🍪 碳水加總計數器</h1>
 
   <div class="card">
-    <div class="section-title">1. 選擇或搜尋食物</div>
+    <div class="section-title">1. 選擇食物或搜尋</div>
     <div class="category-tabs">
       <div class="tab active" onclick="setCat('all', this)">全部</div>
       <div class="tab" onclick="setCat('snack', this)">中式早點</div>
+      <div class="tab" onclick="setCat('main', this)">主食</div>
       <div class="tab" onclick="setCat('fruit', this)">水果</div>
       <div class="tab" onclick="setCat('drink', this)">飲料</div>
     </div>
-    <input type="text" id="foodSearch" placeholder="🔍 輸入關鍵字..." oninput="renderList()">
+    <input type="text" id="foodSearch" placeholder="🔍 搜尋食物..." oninput="renderList()">
     <div class="food-list" id="foodList"></div>
 
     <div class="manual-input-box">
-      <span class="guide-text">✍️ 確認攝取量：</span>
-      
+      <span class="guide-text">✍️ 確認這項攝取量 (A×B×C)：</span>
       <input type="text" id="customName" placeholder="食物名稱 (例如：草莓麵包)" style="margin-bottom:10px">
 
-      <div class="input-label">A. 每份碳水化合物 (公克)</div>
+      <div class="input-label">A. 每份碳水化合物 (看標示)</div>
       <div class="calc-row">
-        <input id="baseCarb" type="number" inputmode="decimal" placeholder="看包裝標示">
-        <span class="unit-text">g</span>
+        <input id="baseCarb" type="number" inputmode="decimal" placeholder="例如：25">
+        <span class="unit-text">公克</span>
       </div>
 
-      <div class="input-label">B. 本包裝含幾份 (份)</div>
+      <div class="input-label">B. 本包裝含幾份 (看標示)</div>
       <div class="calc-row">
         <input id="totalPacks" type="number" inputmode="decimal" value="1">
-        <span class="unit-text">份</span>
+        <span class="unit-text">份量</span>
       </div>
 
-      <div class="input-label">C. 吃了多少 (比例/包)</div>
+      <div class="input-label">C. 實際吃了多少 (1=全吃, 0.5=一半)</div>
       <div class="calc-row">
         <input id="eatRatio" type="number" inputmode="decimal" value="1" step="0.1">
-        <span class="unit-text">倍</span>
-      </div>
-      
-      <div style="font-size: 13px; color: var(--primary); text-align: center; margin-top: 5px;">
-        💡 計算公式：A × B × C = 實際攝取
+        <span class="unit-text">比例</span>
       </div>
 
       <button class="add-btn" onclick="addToList()">＋ 加入本餐清單</button>
@@ -167,45 +161,67 @@
 
   <div class="card">
     <div class="section-title">
-      2. 本餐已選項目
-      <button class="clear-btn" onclick="clearAll()">清空清單</button>
+      2. 本餐已加入清單
+      <button class="clear-btn" onclick="clearAll()">全部清空</button>
     </div>
     <div id="displayList">
-      <div style="color: #A0AEC0; font-size: 15px; text-align: center; padding: 20px;">尚未加入食物</div>
+      <div style="color: #A0AEC0; font-size: 15px; text-align: center; padding: 20px;">尚未加入任何食物</div>
     </div>
   </div>
 
   <div class="total-box">
-    <div style="font-size:16px; opacity:0.9">本餐總碳水 (整數)</div>
+    <div style="font-size:16px; opacity:0.9">本餐總計碳水</div>
     <div class="total-val"><span id="grandTotal">0</span><span style="font-size:24px">g</span></div>
-    <button class="copy-btn" id="cpBtn" onclick="copyTotal()">📋 點擊複製總克數</button>
+    <button class="copy-btn" id="cpBtn" onclick="copyTotal()">📋 複製總數</button>
   </div>
 
-  <a href="https://adsccxx-cpu.github.io/insulin-calculator/" class="link-btn">🚀 下一步：計算劑量</a>
+  <a href="https://adsccxx-cpu.github.io/insulin-calculator/" class="link-btn">🚀 下一步：去計算胰島素</a>
 </div>
 
 <script>
 const foodDB = [
-  {n: "飯糰 (1丸)", c: 60, cat: "snack"},
+  // 中式早點 (snack)
+  {n: "飯糰 (1丸/正常)", c: 60, cat: "snack"},
+  {n: "飯糰 (1丸/大)", c: 80, cat: "snack"},
+  {n: "蔥油餅 (1/4張/一片)", c: 15, cat: "snack"},
+  {n: "蔥油餅 (1整張)", c: 60, cat: "snack"},
+  {n: "蔥抓餅 (1張)", c: 45, cat: "snack"},
   {n: "水煎包 (1顆/肉)", c: 15, cat: "snack"},
   {n: "水煎包 (1顆/菜)", c: 20, cat: "snack"},
-  {n: "蔥油餅 (1/4張)", c: 15, cat: "snack"},
-  {n: "蔥抓餅 (1張)", c: 45, cat: "snack"},
   {n: "蛋餅 (1份)", c: 20, cat: "snack"},
   {n: "燒餅 (1條)", c: 30, cat: "snack"},
   {n: "油條 (1根)", c: 15, cat: "snack"},
-  {n: "饅頭 (1顆)", c: 30, cat: "snack"},
-  {n: "刈包 (1份)", c: 30, cat: "snack"},
-  {n: "肉包 (1顆)", c: 45, cat: "snack"},
-  {n: "紅豆餅/車輪餅 (1顆)", c: 20, cat: "snack"},
-  {n: "小籠包 (1顆)", c: 8, cat: "snack"},
+  {n: "饅頭 (1顆/中)", c: 30, cat: "snack"},
+  {n: "刈包 (1份/不含肉)", c: 30, cat: "snack"},
+  {n: "肉包 (1顆/大)", c: 45, cat: "snack"},
+  {n: "小籠包 (1顆/中型)", c: 8, cat: "snack"},
+  {n: "小籠湯包 (1顆/大型)", c: 10, cat: "snack"},
   {n: "蘿蔔糕 (2片)", c: 30, cat: "snack"},
+  {n: "紅豆餅/車輪餅 (1顆)", c: 20, cat: "snack"},
+
+  // 主食 (main)
+  {n: "白飯 (1碗/平)", c: 60, cat: "main"},
+  {n: "白飯 (1/2碗)", c: 30, cat: "main"},
+  {n: "吐司 (1片)", c: 15, cat: "main"},
+  {n: "陽春麵 (1碗)", c: 45, cat: "main"},
+  {n: "燕麥片 (3湯匙)", c: 15, cat: "main"},
+
+  // 水果 (fruit)
   {n: "蘋果 (1顆/小)", c: 15, cat: "fruit"},
   {n: "香蕉 (1根)", c: 30, cat: "fruit"},
-  {n: "芭樂 (1顆/中)", c: 30, cat: "fruit"},
+  {n: "芭樂 (1顆/中型)", c: 30, cat: "fruit"},
+  {n: "西瓜 (1大片)", c: 15, cat: "fruit"},
+  {n: "小番茄 (15顆)", c: 15, cat: "fruit"},
+
+  // 飲料 (drink)
   {n: "珍珠奶茶 (700ml/全糖)", c: 60, cat: "drink"},
-  {n: "有糖豆漿 (400ml)", c: 15, cat: "drink"},
-  {n: "可樂 (330ml/罐)", c: 35, cat: "drink"}
+  {n: "珍珠奶茶 (700ml/半糖)", c: 45, cat: "drink"},
+  {n: "豆漿 (400ml/有糖)", c: 15, cat: "drink"},
+  {n: "豆漿 (400ml/無糖)", c: 5, cat: "drink"},
+  {n: "米漿 (400ml)", c: 40, cat: "drink"},
+  {n: "可樂 (330ml/罐)", c: 35, cat: "drink"},
+  {n: "全脂鮮奶 (240ml)", c: 12, cat: "drink"},
+  {n: "柳橙汁 (240ml)", c: 25, cat: "drink"}
 ];
 
 let currentCat = 'all';
@@ -232,7 +248,6 @@ function renderList() {
       document.getElementById('baseCarb').value = f.c;
       document.getElementById('totalPacks').value = 1;
       document.getElementById('eatRatio').value = 1;
-      // 點擊後自動捲動到輸入區
       document.querySelector('.manual-input-box').scrollIntoView({ behavior: 'smooth' });
     };
     list.appendChild(div);
@@ -245,7 +260,7 @@ function addToList() {
   const c = parseFloat(document.getElementById('eatRatio').value);
   const n = document.getElementById('customName').value || "市售食品";
   
-  if(!a) { alert("請輸入碳水克數"); return; }
+  if(!a) { alert("請先輸入碳水克數"); return; }
 
   const totalCarb = a * b * c;
   currentList.push({ name: n, carb: totalCarb });
@@ -262,7 +277,7 @@ function updateUI() {
   const listDiv = document.getElementById('displayList');
   const totalSpan = document.getElementById('grandTotal');
   if(currentList.length === 0) {
-    listDiv.innerHTML = '<div style="color: #A0AEC0; font-size: 15px; text-align: center; padding: 20px;">尚未加入食物</div>';
+    listDiv.innerHTML = '<div style="color: #A0AEC0; font-size: 15px; text-align: center; padding: 20px;">尚未加入任何食物</div>';
     totalSpan.innerText = '0';
     return;
   }
@@ -285,7 +300,7 @@ function removeItem(index) {
 }
 
 function clearAll() {
-  if(confirm("確定要清空清單嗎？")) {
+  if(confirm("確定要清空整餐清單嗎？")) {
     currentList = [];
     updateUI();
   }
@@ -296,7 +311,7 @@ function copyTotal() {
   navigator.clipboard.writeText(val).then(() => {
     const btn = document.getElementById('cpBtn');
     btn.innerText = "✅ 已複製！";
-    setTimeout(() => { btn.innerText = "📋 點擊複製總克數"; }, 1500);
+    setTimeout(() => { btn.innerText = "📋 複製總數"; }, 1500);
   });
 }
 
