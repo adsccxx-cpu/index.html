@@ -12,6 +12,7 @@
     --card: #FFFFFF;
     --text: #2D3436;
     --accent: #FF7675;
+    --success: #48BB78;
     --hint: #4b5563;
   }
 
@@ -19,13 +20,8 @@
     font-family: -apple-system, "Noto Sans TC", sans-serif;
     background-color: var(--bg);
     color: var(--text);
-    margin: 0;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    line-height: 1.5;
-    overflow-x: hidden;
+    margin: 0; padding: 15px;
+    display: flex; flex-direction: column; align-items: center;
   }
 
   .wrapper { width: 100%; max-width: 420px; }
@@ -33,136 +29,80 @@
   h1 { font-size: 24px; color: var(--primary); text-align: center; margin: 15px 0; }
 
   .card {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 18px;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    box-sizing: border-box;
+    background: var(--card); border-radius: 20px; padding: 18px;
+    margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
   }
 
-  .section-title { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    font-size: 18px; 
-    font-weight: bold; 
-    margin-bottom: 12px; 
-    color: var(--text); 
-  }
-
-  /* 分類與搜尋 */
-  .category-tabs { 
-    display: flex; 
-    gap: 8px; 
-    margin-bottom: 12px; 
-    overflow-x: auto; 
-    white-space: nowrap; 
-    padding-bottom: 8px;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* 隱藏分類欄的捲軸但保留功能 */
-  .category-tabs::-webkit-scrollbar { display: none; }
-
-  .tab {
-    padding: 10px 18px; font-size: 15px; border-radius: 20px;
-    border: 1px solid #E2E8F0; background: white; cursor: pointer;
-    flex-shrink: 0;
-  }
-  .tab.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-  #foodSearch {
-    width: 100%; padding: 14px; font-size: 17px; border: 2px solid #E2E8F0; border-radius: 12px; margin-bottom: 10px; box-sizing: border-box;
-  }
-
-  /* --- 捲軸優化區塊 --- */
+  /* 捲軸明顯化 */
   .food-list {
-    height: 300px; 
-    overflow-y: scroll; 
-    border: 2px solid #F0F4F8; 
-    border-radius: 12px; 
-    background: #FAFBFC; 
-    margin-bottom: 15px;
-    -webkit-overflow-scrolling: touch;
+    height: 300px; overflow-y: scroll; border: 2px solid #F0F4F8; 
+    border-radius: 12px; background: #FAFBFC; margin-bottom: 10px;
   }
-  /* 讓捲軸在移動端更明顯 */
-  .food-list::-webkit-scrollbar { 
-    width: 8px; 
-    display: block; 
-  }
-  .food-list::-webkit-scrollbar-track {
-    background: #EDF2F7;
-    border-radius: 10px;
-  }
-  .food-list::-webkit-scrollbar-thumb { 
-    background: #CBD5E0; 
-    border-radius: 10px; 
-    border: 2px solid #EDF2F7;
-  }
-  .food-list::-webkit-scrollbar-thumb:active {
-    background: var(--primary);
-  }
+  .food-list::-webkit-scrollbar { width: 10px; }
+  .food-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+  .food-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
   .food-item {
-    padding: 16px; border-bottom: 1px solid #EDF2F7; display: flex; justify-content: space-between; font-size: 17px; cursor: pointer;
+    padding: 16px; border-bottom: 1px solid #EDF2F7;
+    display: flex; justify-content: space-between; cursor: pointer;
   }
-  .food-item:active { background: #EBF8FF; }
 
-  /* 聰明計算區 */
-  .manual-input-box {
-    background: #F8F9FE; padding: 18px; border-radius: 18px; border: 2px solid #EBF4FF;
+  /* 成功加入時的閃爍動畫 */
+  @keyframes highlight {
+    0% { background-color: var(--card); }
+    50% { background-color: #EBF8FF; transform: scale(1.02); }
+    100% { background-color: var(--card); }
   }
-  .guide-text { font-size: 15px; color: var(--primary); margin-bottom: 12px; font-weight: bold; display: block; }
-  .input-label { font-size: 14px; color: var(--hint); margin-top: 10px; margin-bottom: 6px; font-weight: 500; }
-  .calc-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  
-  input[type="number"], input[type="text"] {
-    width: 100%; padding: 14px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 18px; outline: none; box-sizing: border-box;
-    background: #fff;
-  }
-  input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1); }
-  
-  .unit-text { font-weight: bold; font-size: 16px; color: #4A5568; white-space: nowrap; width: 45px; }
+  .highlight-card { animation: highlight 0.6s ease-out; }
 
+  /* 懸浮通知 */
+  #toast {
+    position: fixed; top: 20px; background: var(--success); color: white;
+    padding: 12px 24px; border-radius: 30px; font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: none; z-index: 2000;
+  }
+
+  .category-tabs { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 8px; }
+  .tab { padding: 8px 16px; border-radius: 20px; border: 1px solid #E2E8F0; background: white; white-space: nowrap; font-size: 14px; }
+  .tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+  #foodSearch { width: 100%; padding: 14px; font-size: 17px; border: 2px solid #E2E8F0; border-radius: 12px; margin-bottom: 10px; box-sizing: border-box; }
+
+  .manual-input-box { background: #F8F9FE; padding: 18px; border-radius: 18px; border: 2px solid #EBF4FF; }
+  .input-label { font-size: 13px; color: var(--hint); margin-top: 10px; margin-bottom: 4px; font-weight: bold; }
+  
+  input[type="number"], input[type="text"] { width: 100%; padding: 12px; border: 2px solid #E2E8F0; border-radius: 10px; font-size: 18px; box-sizing: border-box; }
+  
   .add-btn {
-    width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 15px; font-weight: bold; font-size: 18px; 
-    cursor: pointer; margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(74, 144, 226, 0.2);
+    width: 100%; background: var(--primary); color: white; border: none; padding: 16px; 
+    border-radius: 15px; font-weight: bold; font-size: 18px; margin-top: 15px; cursor: pointer;
   }
 
   .list-item {
-    display: flex; justify-content: space-between; align-items: center; font-size: 16px;
-    margin-bottom: 10px; background: #FFF; padding: 14px; border-radius: 12px;
-    border-left: 6px solid var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px; background: #FFF; border-bottom: 1px solid #eee;
   }
-  .del-btn { color: var(--accent); font-weight: bold; cursor: pointer; padding: 5px; font-size: 15px; }
+  .del-btn { color: var(--accent); font-weight: bold; cursor: pointer; }
 
   .total-box {
-    background: linear-gradient(135deg, #4A90E2, #3182CE); color: white; text-align: center; padding: 25px; border-radius: 24px; margin-top: 10px;
-    box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+    background: linear-gradient(135deg, #4A90E2, #3182CE); color: white;
+    text-align: center; padding: 25px; border-radius: 24px; margin-top: 10px;
   }
-  .total-val { font-size: 64px; font-weight: 900; margin: 5px 0; }
-  .copy-btn {
-    background: white; color: var(--primary); border: none; padding: 15px; border-radius: 30px; width: 100%; font-weight: bold; margin-top: 12px; font-size: 18px;
-  }
-
-  .clear-btn { font-size: 14px; color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 10px; background: white; cursor: pointer; }
-
-  .link-btn {
-    display: block; background: #2D3436; color: white; text-decoration: none; text-align: center; padding: 18px; border-radius: 18px; font-weight: bold; margin-top: 15px; font-size: 18px;
-  }
+  .total-val { font-size: 60px; font-weight: 900; }
 </style>
 </head>
 <body>
 
-<div class="wrapper">
-  <h1>🍪 碳水化合物計算機</h1>
+<div id="toast">✅ 已成功加入清單</div>
 
-  <div class="card" id="topSection">
-    <div class="section-title">1. 選擇食物或搜尋</div>
+<div class="wrapper">
+  <h1>🍪 碳水計算器</h1>
+
+  <div class="card" id="searchSection">
     <div class="category-tabs">
       <div class="tab active" onclick="setCat('all', this)">全部</div>
-      <div class="tab" onclick="setCat('snack', this)">中式早點/點心</div>
+      <div class="tab" onclick="setCat('snack', this)">點心</div>
       <div class="tab" onclick="setCat('main', this)">主食</div>
       <div class="tab" onclick="setCat('fruit', this)">水果</div>
       <div class="tab" onclick="setCat('drink', this)">飲料</div>
@@ -171,97 +111,51 @@
     <div class="food-list" id="foodList"></div>
 
     <div class="manual-input-box" id="inputArea">
-      <span class="guide-text">✍️ 確認攝取量 (A×B×C)：</span>
-      <input type="text" id="customName" placeholder="食物名稱 (例如：草莓麵包)" onfocus="this.select()">
+      <div class="input-label">食物名稱</div>
+      <input type="text" id="customName" onfocus="this.select()">
 
-      <div class="input-label">A. 每份碳水化合物 (公克)</div>
-      <div class="calc-row">
-        <input id="baseCarb" type="number" inputmode="decimal" placeholder="看標示" onfocus="this.select()">
-        <span class="unit-text">公克</span>
+      <div style="display: flex; gap: 10px;">
+        <div style="flex: 1;">
+          <div class="input-label">碳水 (g)</div>
+          <input id="baseCarb" type="number" inputmode="decimal" onfocus="this.select()">
+        </div>
+        <div style="flex: 1;">
+          <div class="input-label">吃了多少 (比例)</div>
+          <input id="eatRatio" type="number" inputmode="decimal" value="1" onfocus="this.select()">
+        </div>
       </div>
-
-      <div class="input-label">B. 本包裝含幾份</div>
-      <div class="calc-row">
-        <input id="totalPacks" type="number" inputmode="decimal" value="1" onfocus="this.select()">
-        <span class="unit-text">份</span>
-      </div>
-
-      <div class="input-label">C. 吃了多少 (1=全吃, 0.5=一半)</div>
-      <div class="calc-row">
-        <input id="eatRatio" type="number" inputmode="decimal" value="1" step="0.1" onfocus="this.select()">
-        <span class="unit-text">比例</span>
-      </div>
-
       <button class="add-btn" onclick="addToList()">＋ 加入本餐清單</button>
     </div>
   </div>
 
-  <div class="card">
-    <div class="section-title">
-      2. 本餐已加入清單
-      <button class="clear-btn" onclick="clearAll()">全部清空</button>
+  <div class="card" id="listCard">
+    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+      <strong>🛒 本餐已選清單</strong>
+      <span style="color:var(--accent); cursor:pointer;" onclick="clearAll()">全部清空</span>
     </div>
     <div id="displayList">
-      <div style="color: #A0AEC0; font-size: 15px; text-align: center; padding: 20px;">尚未加入項目</div>
+      <div style="color: #ccc; text-align: center; padding: 10px;">尚未加入食物</div>
     </div>
   </div>
 
   <div class="total-box">
-    <div style="font-size:16px; opacity:0.9">本餐總計碳水</div>
+    <div style="font-size:16px; opacity:0.9">總計碳水</div>
     <div class="total-val"><span id="grandTotal">0</span><span style="font-size:24px">g</span></div>
-    <button class="copy-btn" id="cpBtn" onclick="copyTotal()">📋 複製總數</button>
   </div>
 
-  <a href="https://adsccxx-cpu.github.io/insulin-calculator/" class="link-btn">🚀 下一步：計算胰島素</a>
+  <a href="https://adsccxx-cpu.github.io/insulin-calculator/" style="display:block; text-align:center; color:#666; margin-top:20px; text-decoration:none;">🚀 前往計算胰島素</a>
 </div>
 
 <script>
 const foodDB = [
-  {n: "飯糰 (1丸/正常)", c: 60, cat: "snack"},
-  {n: "蔥油餅 (1/4張，一片)", c: 15, cat: "snack"},
-  {n: "蔥油餅 (1整張)", c: 60, cat: "snack"},
-  {n: "蔥抓餅 (1張)", c: 45, cat: "snack"},
-  {n: "水煎包 (1顆/肉)", c: 15, cat: "snack"},
-  {n: "水煎包 (1顆/菜)", c: 20, cat: "snack"},
+  {n: "飯糰 (1丸)", c: 60, cat: "snack"},
   {n: "蛋餅 (1份)", c: 20, cat: "snack"},
-  {n: "燒餅 (1條)", c: 30, cat: "snack"},
-  {n: "油條 (1根)", c: 15, cat: "snack"},
-  {n: "饅頭 (1顆/中)", c: 30, cat: "snack"},
-  {n: "刈包 (1份)", c: 30, cat: "snack"},
-  {n: "肉包 (1顆/大)", c: 45, cat: "snack"},
-  {n: "紅豆餅/車輪餅 (1顆)", c: 20, cat: "snack"},
-  {n: "小籠包 (1顆)", c: 8, cat: "snack"},
-  {n: "蘿蔔糕 (2片)", c: 30, cat: "snack"},
-  {n: "冰淇淋 (1球)", c: 15, cat: "snack"},
-  {n: "蛋捲冰淇淋 (超商)", c: 25, cat: "snack"},
-  {n: "白飯 (1碗/平)", c: 60, cat: "main"},
-  {n: "白飯 (1/2碗)", c: 30, cat: "main"},
+  {n: "白飯 (1碗)", c: 60, cat: "main"},
   {n: "吐司 (1片)", c: 15, cat: "main"},
-  {n: "陽春麵 (1碗)", c: 45, cat: "main"},
-  {n: "燕麥片 (3湯匙)", c: 15, cat: "main"},
-  {n: "西瓜 (1大片/250g)", c: 15, cat: "fruit"},
-  {n: "芒果 (1/2顆，中)", c: 15, cat: "fruit"},
-  {n: "木瓜 (1/4顆，大)", c: 15, cat: "fruit"},
-  {n: "奇異果 (1顆)", c: 10, cat: "fruit"},
-  {n: "百香果 (2顆)", c: 10, cat: "fruit"},
-  {n: "橘子 (1顆/中)", c: 15, cat: "fruit"},
-  {n: "鳳梨 (1/10顆，切片)", c: 15, cat: "fruit"},
-  {n: "龍眼 (10顆)", c: 15, cat: "fruit"},
-  {n: "荔枝 (8顆)", c: 15, cat: "fruit"},
-  {n: "釋迦 (1/2顆/大)", c: 15, cat: "fruit"},
-  {n: "蘋果 (1顆/小)", c: 15, cat: "fruit"},
+  {n: "蘋果 (1顆)", c: 15, cat: "fruit"},
   {n: "香蕉 (1根)", c: 30, cat: "fruit"},
-  {n: "芭樂 (1顆/中)", c: 30, cat: "fruit"},
-  {n: "珍珠奶茶 (700ml/全糖)", c: 60, cat: "drink"},
-  {n: "紅茶 (700ml/全糖)", c: 45, cat: "drink"},
-  {n: "多多綠 (700ml/全糖)", c: 70, cat: "drink"},
-  {n: "米漿 (400ml)", c: 40, cat: "drink"},
-  {n: "有糖豆漿 (400ml)", c: 15, cat: "drink"},
-  {n: "養樂多 (1瓶/100ml)", c: 15, cat: "drink"},
-  {n: "西瓜汁 (350ml)", c: 25, cat: "drink"},
-  {n: "可樂 (330ml/罐)", c: 35, cat: "drink"},
-  {n: "鮮奶 (240ml)", c: 12, cat: "drink"},
-  {n: "柳橙汁 (240ml)", c: 25, cat: "drink"}
+  {n: "芭樂 (1顆)", c: 30, cat: "fruit"},
+  {n: "珍奶 (全糖)", c: 60, cat: "drink"}
 ];
 
 let currentCat = 'all';
@@ -283,54 +177,56 @@ function renderList() {
     const div = document.createElement('div');
     div.className = 'food-item';
     div.innerHTML = `<span>${f.n}</span><span style="color:var(--primary); font-weight:bold">${f.c}g</span>`;
-    
     div.onclick = () => {
       document.getElementById('customName').value = f.n;
       document.getElementById('baseCarb').value = f.c;
-      document.getElementById('totalPacks').value = 1;
       document.getElementById('eatRatio').value = 1;
-      
-      // 優化 1：平滑捲動到輸入區
+      // 捲動到輸入區並自動聚焦比例
       document.getElementById('inputArea').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
-      // 優化 2：自動 Focus 比例欄位並選取，方便直接修改數字
-      setTimeout(() => {
-        const ratioInput = document.getElementById('eatRatio');
-        ratioInput.focus();
-        ratioInput.select();
-      }, 500); 
+      setTimeout(() => { document.getElementById('eatRatio').focus(); document.getElementById('eatRatio').select(); }, 500);
     };
     list.appendChild(div);
   });
 }
 
+function showToast() {
+  const toast = document.getElementById('toast');
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 2000);
+}
+
 function addToList() {
   const a = parseFloat(document.getElementById('baseCarb').value);
-  const b = parseFloat(document.getElementById('totalPacks').value);
   const c = parseFloat(document.getElementById('eatRatio').value);
-  const n = document.getElementById('customName').value || "市售食品";
+  const n = document.getElementById('customName').value || "自訂食物";
   
-  if(!a && a !== 0) { alert("請輸入碳水克數"); return; }
+  if(isNaN(a)) { alert("請輸入克數"); return; }
 
-  const totalCarb = a * b * c;
-  currentList.push({ name: n, carb: totalCarb });
+  currentList.push({ name: n, carb: a * c });
   updateUI();
-  
-  // 重置輸入框
+
+  // 成功反饋 1: 彈出提示
+  showToast();
+
+  // 成功反饋 2: 清單卡片閃爍
+  const listCard = document.getElementById('listCard');
+  listCard.classList.remove('highlight-card');
+  void listCard.offsetWidth; // 觸發重繪
+  listCard.classList.add('highlight-card');
+
+  // 重置輸入並回頂部
   document.getElementById('baseCarb').value = '';
   document.getElementById('customName').value = '';
-  document.getElementById('totalPacks').value = 1;
-  document.getElementById('eatRatio').value = 1;
-
-  // 優化 3：加入後自動捲回頂部搜尋框，省下手動上滑動作
-  document.getElementById('topSection').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('foodSearch').value = '';
+  renderList();
+  document.getElementById('searchSection').scrollIntoView({ behavior: 'smooth' });
 }
 
 function updateUI() {
   const listDiv = document.getElementById('displayList');
   const totalSpan = document.getElementById('grandTotal');
   if(currentList.length === 0) {
-    listDiv.innerHTML = '<div style="color: #A0AEC0; font-size: 15px; text-align: center; padding: 20px;">尚未加入食物</div>';
+    listDiv.innerHTML = '<div style="color:#ccc; text-align:center; padding:10px;">尚未加入食物</div>';
     totalSpan.innerText = '0';
     return;
   }
@@ -341,7 +237,7 @@ function updateUI() {
     const div = document.createElement('div');
     div.className = 'list-item';
     div.innerHTML = `<span>${item.name} (${Math.round(item.carb)}g)</span>
-                     <span class="del-btn" onclick="removeItem(${index})">✕ 刪除</span>`;
+                     <span class="del-btn" onclick="removeItem(${index})">✕</span>`;
     listDiv.appendChild(div);
   });
   totalSpan.innerText = Math.round(total);
@@ -353,19 +249,7 @@ function removeItem(index) {
 }
 
 function clearAll() {
-  if(confirm("確定要清空整餐清單嗎？")) {
-    currentList = [];
-    updateUI();
-  }
-}
-
-function copyTotal() {
-  const val = document.getElementById('grandTotal').innerText;
-  navigator.clipboard.writeText(val).then(() => {
-    const btn = document.getElementById('cpBtn');
-    btn.innerText = "✅ 已複製！";
-    setTimeout(() => { btn.innerText = "📋 複製總數"; }, 1500);
-  });
+  if(confirm("確定清空嗎？")) { currentList = []; updateUI(); }
 }
 
 renderList();
